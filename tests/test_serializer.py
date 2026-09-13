@@ -3,6 +3,20 @@
 
 import unittest
 
+from django.conf import settings
+
+if not settings.configured:
+    settings.configure(
+        SECRET_KEY="test-only-secret-key",
+        INSTALLED_APPS=["rest_framework"],
+        REST_FRAMEWORK={},
+        USE_TZ=True,
+        DEFAULT_CHARSET="utf-8",
+    )
+
+import django
+
+django.setup()
 
 from src.serializers import StudentOnboardingSerializer
 
