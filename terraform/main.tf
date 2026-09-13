@@ -11,6 +11,7 @@ locals {
 }
 
 resource "google_storage_bucket" "d0_raw_landing" {
+  # checkov:skip=CKV_GCP_62:Access logging is intentionally excluded from this student demo because no dedicated logging bucket is provisioned.
   name                        = var.bucket_name
   location                    = var.region
   uniform_bucket_level_access = true

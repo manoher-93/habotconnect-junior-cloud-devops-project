@@ -2,6 +2,7 @@
 # HabotConnect Hiring Project — D1 staged/enforced data layer
 
 resource "google_bigquery_dataset" "d1_staged_enforced" {
+  # checkov:skip=CKV_GCP_81:CSEK is intentionally not used in this student project; BigQuery platform-managed encryption is used.
   dataset_id                 = "d1_staged_enforced"
   friendly_name              = "D1 Staged Enforced"
   description                = "Validated and policy-controlled staging layer for onboarding analytics."
@@ -12,6 +13,7 @@ resource "google_bigquery_dataset" "d1_staged_enforced" {
 }
 
 resource "google_bigquery_table" "student_onboarding" {
+  # checkov:skip=CKV_GCP_80:CSEK is intentionally not used in this student project; BigQuery platform-managed encryption is used.
   dataset_id          = google_bigquery_dataset.d1_staged_enforced.dataset_id
   table_id            = "student_onboarding"
   deletion_protection = true
