@@ -1,0 +1,9 @@
+# Copy to terraform.tfvars and replace the placeholders.
+# Never commit real credentials or secrets.
+project_id          = "YOUR_GCP_PROJECT_ID"
+bucket_name         = "YOUR-GLOBALLY-UNIQUE-RAW-BUCKET"
+region              = "us-central1"
+app_engine_location = "us-central"
+environment         = "staging"
+raw_prefix          = "raw/"
+allowed_tenant      = "habot-demo"

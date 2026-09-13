@@ -1,0 +1,12 @@
+{
+  "student_id": "not-a-uuid",
+  "parent_email": "parent@example.com",
+  "student_name": "Aarav Singh",
+  "date_of_birth": "2014-05-12",
+  "requires_learning_support": true,
+  "support_type": "Reading support",
+  "guardian_consent": false,
+  "data_processing_consent": true,
+  "country_code": "ae",
+  "organization_id": "habot-demo"
+}

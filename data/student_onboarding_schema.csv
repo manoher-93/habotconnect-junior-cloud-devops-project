@@ -1,0 +1,11 @@
+Field,Data Type,Required,Validation Limit,Decision Rule
+student_id,Text / Universally Unique Identifier,Yes,Valid Universally Unique Identifier,Yes when valid
+parent_email,Electronic Mail Address,Yes,Maximum 254 characters and valid electronic mail address,Yes when valid
+student_name,Text,Yes,2-100 characters after trimming whitespace,Yes when valid
+date_of_birth,Date,Yes,Valid date and student age 3-18,Yes when valid
+requires_learning_support,Boolean,Yes,True or false only,Yes when valid
+support_type,Text,Conditional,Required if learning support is true and 2-100 characters,Yes when valid
+guardian_consent,Boolean,Yes,Must be true,Yes only when true
+data_processing_consent,Boolean,Yes,Must be true,Yes only when true
+country_code,Text,Yes,Exactly 2 uppercase letters,Yes when valid
+organization_id,Text,Yes,1-64 lowercase letters numbers or hyphen,Yes when valid

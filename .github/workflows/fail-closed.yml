@@ -1,0 +1,101 @@
+# Candidate: Manoher Singh | manoharmsp93@gmail.com | +91-9648548275
+# HabotConnect Hiring Project — fail-closed build gate
+
+name: Fail-Closed Build Gate
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-gate:
+    name: Security and Quality Gates
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout full history
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Set up Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform formatting gate
+        working-directory: terraform
+        run: terraform fmt -check -recursive
+
+      - name: Terraform initialization
+        working-directory: terraform
+        run: terraform init -backend=false
+
+      - name: Terraform validation gate
+        working-directory: terraform
+        run: terraform validate
+
+      - name: TFLint gate
+        uses: terraform-linters/setup-tflint@v6
+
+      - name: Run TFLint
+        working-directory: terraform
+        run: |
+          tflint --init
+          tflint
+
+      - name: Checkov IaC security gate
+        uses: bridgecrewio/checkov-action@v12
+        with:
+          directory: terraform
+          framework: terraform
+          soft_fail: false
+
+      - name: Gitleaks secret gate
+        uses: gitleaks/gitleaks-action@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Deterministic hardcoded-secret gate
+        run: python scripts/check_secrets.py
+
+      - name: Python syntax gate
+        run: python -m compileall -q src tests
+
+      - name: Install test dependencies
+        run: python -m pip install "Django>=5.2,<6" "djangorestframework>=3.16,<3.17"
+
+      - name: Unit-test gate
+        run: python -m unittest discover -s tests -v
+
+  quarantine:
+    name: Quarantine Blocked Build
+    needs: build-gate
+    if: ${{ failure() && needs.build-gate.result == 'failure' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Write quarantine record
+        run: |
+          printf 'Build blocked by a failed quality or security gate.\n' > quarantine-record.txt
+          printf 'Commit: %s\n' "${GITHUB_SHA}" >> quarantine-record.txt
+          printf 'No deployment is permitted.\n' >> quarantine-record.txt
+      - name: Preserve quarantine evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: quarantined-build-${{ github.run_id }}
+          path: quarantine-record.txt
+
+  # Deliberately separated from validation. A failed build-gate job prevents
+  # this job from starting, which is the fail-closed behavior required by the
+  # hiring project.
+  deploy:
+    name: Deployment Placeholder After Successful Gates
+    needs: build-gate
+    if: ${{ needs.build-gate.result == 'success' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deployment allowed
+        run: echo "All fail-closed gates passed. Deployment stage is permitted."
