@@ -2,12 +2,13 @@
 # HabotConnect Hiring Project — serializer tests
 
 import unittest
+import secrets
 
 from django.conf import settings
 
 if not settings.configured:
     settings.configure(
-        SECRET_KEY="test-only-secret-key",
+        SECRET_KEY=secrets.token_urlsafe(32),
         INSTALLED_APPS=["rest_framework"],
         REST_FRAMEWORK={},
         USE_TZ=True,
