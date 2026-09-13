@@ -58,6 +58,7 @@ jobs:
         uses: gitleaks/gitleaks-action@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITLEAKS_ENABLE_UPLOAD_ARTIFACT: false
 
       - name: Deterministic hardcoded-secret gate
         run: python scripts/check_secrets.py
